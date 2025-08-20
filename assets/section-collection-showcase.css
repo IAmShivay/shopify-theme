@@ -1,0 +1,310 @@
+.collection-showcase {
+  position: relative;
+  overflow: hidden;
+}
+
+.collection-showcase::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(231, 76, 60, 0.02) 0%, rgba(255, 107, 53, 0.03) 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.collection-showcase > * {
+  position: relative;
+  z-index: 1;
+}
+
+.collection-showcase__header {
+  text-align: center;
+  margin-bottom: 5rem;
+}
+
+.collection-showcase__heading {
+  margin-bottom: 1.5rem;
+  color: rgb(var(--color-foreground));
+}
+
+.collection-showcase__subheading {
+  font-size: 1.6rem;
+  color: rgba(var(--color-foreground), 0.75);
+  max-width: 60rem;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+.collection-showcase__slider {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.collection-showcase__slide {
+  height: auto;
+}
+
+.collection-card {
+  background: rgb(var(--color-background));
+  border-radius: 2rem;
+  overflow: hidden;
+  box-shadow: 0 1rem 3rem rgba(var(--color-shadow), 0.1);
+  border: 0.1rem solid rgba(var(--color-foreground), 0.08);
+  transition: all var(--duration-short) ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.collection-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 0.4rem;
+  background: linear-gradient(90deg, rgba(var(--color-button), 0.8) 0%, rgba(var(--color-button), 0.4) 100%);
+  z-index: 2;
+}
+
+.collection-card:hover {
+  transform: translateY(-0.8rem);
+  box-shadow: 0 1.5rem 4rem rgba(var(--color-shadow), 0.15);
+}
+
+.collection-card__image {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16/10;
+  background: linear-gradient(135deg, rgba(var(--color-foreground), 0.02) 0%, rgba(var(--color-foreground), 0.05) 100%);
+}
+
+.collection-card__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--duration-short) ease;
+}
+
+.collection-card:hover .collection-card__image img {
+  transform: scale(1.05);
+}
+
+.collection-card__placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(var(--color-foreground), 0.05) 0%, rgba(var(--color-foreground), 0.1) 100%);
+}
+
+.collection-card__placeholder svg {
+  width: 6rem;
+  height: 6rem;
+  opacity: 0.3;
+}
+
+.collection-card__overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.4) 100%);
+  opacity: 0;
+  transition: opacity var(--duration-short) ease;
+  display: flex;
+  align-items: flex-end;
+  padding: 2rem;
+}
+
+.collection-card:hover .collection-card__overlay {
+  opacity: 1;
+}
+
+.collection-card__stats {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  padding: 0.8rem 1.5rem;
+  border-radius: 2rem;
+  border: 0.1rem solid rgba(255, 255, 255, 0.2);
+}
+
+.collection-card__count {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: rgba(var(--color-foreground), 0.9);
+}
+
+.collection-card__content {
+  padding: 3rem;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+.collection-card__title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: rgb(var(--color-foreground));
+  margin-bottom: 1.5rem;
+  line-height: 1.3;
+}
+
+.collection-card__title a {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--duration-short) ease;
+}
+
+.collection-card__title a:hover {
+  color: rgba(var(--color-button), 0.8);
+}
+
+.collection-card__description {
+  font-size: 1.5rem;
+  color: rgba(var(--color-foreground), 0.75);
+  line-height: 1.6;
+  margin-bottom: 2.5rem;
+  flex-grow: 1;
+}
+
+.collection-card__button {
+  margin-top: auto;
+}
+
+.collection-card__button .button {
+  width: 100%;
+  font-size: 1.5rem;
+  padding: 1.5rem 2rem;
+  border-radius: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all var(--duration-short) ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.collection-card__button .button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.collection-card__button .button:hover::before {
+  left: 100%;
+}
+
+.collection-card__button .button:hover {
+  transform: translateY(-0.2rem);
+  box-shadow: 0 0.8rem 2.4rem rgba(var(--color-shadow), 0.2);
+}
+
+/* Mobile Responsive */
+@media screen and (max-width: 749px) {
+  .collection-showcase__header {
+    margin-bottom: 3rem;
+  }
+  
+  .collection-showcase__subheading {
+    font-size: 1.4rem;
+  }
+  
+  .collection-card__content {
+    padding: 2rem;
+  }
+  
+  .collection-card__title {
+    font-size: 2rem;
+  }
+  
+  .collection-card__overlay {
+    padding: 1.5rem;
+  }
+}
+
+/* Animation */
+@media (prefers-reduced-motion: no-preference) {
+  .collection-card {
+    opacity: 0;
+    transform: translateY(3rem);
+    animation: slideInUp 0.8s ease forwards;
+  }
+  
+  .collection-showcase__slide:nth-child(2) .collection-card {
+    animation-delay: 0.2s;
+  }
+  
+  .collection-showcase__slide:nth-child(3) .collection-card {
+    animation-delay: 0.4s;
+  }
+  
+  .collection-showcase__slide:nth-child(4) .collection-card {
+    animation-delay: 0.6s;
+  }
+}
+
+@keyframes slideInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Special hover effects */
+.collection-card::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: radial-gradient(circle, rgba(var(--color-button), 0.03) 0%, transparent 70%);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: all var(--duration-short) ease;
+  z-index: -1;
+}
+
+.collection-card:hover::after {
+  width: 120%;
+  height: 120%;
+}
+
+/* Kitchen collection specific styling */
+.collection-card__image::after {
+  content: '🍳';
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  width: 4rem;
+  height: 4rem;
+  background: rgba(var(--color-button), 0.9);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all var(--duration-short) ease;
+  z-index: 3;
+}
+
+.collection-card:hover .collection-card__image::after {
+  opacity: 1;
+  transform: scale(1);
+}

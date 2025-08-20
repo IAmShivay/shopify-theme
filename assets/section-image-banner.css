@@ -4,10 +4,33 @@
   flex-direction: column;
   z-index: auto;
   isolation: isolate;
+  overflow: hidden;
+}
+
+.banner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(231, 76, 60, 0.02) 0%, rgba(255, 107, 53, 0.03) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.banner > * {
+  position: relative;
+  z-index: 2;
 }
 
 .banner__box {
   text-align: center;
+  padding: 3rem 2rem;
+  border-radius: 1.5rem;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0.8rem 3.2rem rgba(var(--color-shadow), 0.1);
+  border: 0.1rem solid rgba(var(--color-foreground), 0.08);
 }
 
 /* Needed for gradient continuity with or without animation, the transform scopes the gradient to its container which happens already when animation are turned on */
@@ -488,5 +511,160 @@
   .banner--desktop-transparent .inline-richtext a:hover,
   .banner--desktop-transparent .rte a:hover {
     color: currentColor;
+  }
+}
+
+/* Features Block Styling */
+.banner__features {
+  margin-top: 2rem;
+}
+
+.banner__features-grid {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.banner__feature {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 1rem 1.5rem;
+  background: rgba(var(--color-background), 0.9);
+  border-radius: 3rem;
+  border: 0.1rem solid rgba(var(--color-foreground), 0.1);
+  backdrop-filter: blur(10px);
+  transition: all var(--duration-short) ease;
+}
+
+.banner__feature:hover {
+  transform: translateY(-0.2rem);
+  box-shadow: 0 0.5rem 1.5rem rgba(var(--color-shadow), 0.15);
+  border-color: rgba(var(--color-button), 0.3);
+}
+
+.banner__feature-icon {
+  font-size: 1.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  background: linear-gradient(135deg, rgba(var(--color-button), 0.1) 0%, rgba(var(--color-button), 0.2) 100%);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.banner__feature-text {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: rgba(var(--color-foreground), 0.85);
+  white-space: nowrap;
+}
+
+/* Badge Block Styling */
+.banner__badge {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  z-index: 3;
+}
+
+.banner__badge-content {
+  background: linear-gradient(135deg, rgba(var(--color-button), 0.95) 0%, rgba(var(--color-button), 0.85) 100%);
+  color: rgb(var(--color-button-text));
+  padding: 1rem 1.5rem;
+  border-radius: 0.8rem;
+  text-align: center;
+  box-shadow: 0 0.4rem 1.2rem rgba(var(--color-shadow), 0.2);
+  backdrop-filter: blur(10px);
+  border: 0.1rem solid rgba(255, 255, 255, 0.2);
+  animation: pulse-badge 2s infinite;
+}
+
+.banner__badge-text {
+  display: block;
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.2rem;
+}
+
+.banner__badge-subtext {
+  display: block;
+  font-size: 1rem;
+  opacity: 0.9;
+  font-weight: 500;
+}
+
+@keyframes pulse-badge {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* Enhanced Button Styling for Kitchenware */
+.banner__buttons .button {
+  font-size: 1.6rem;
+  padding: 1.5rem 3rem;
+  border-radius: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all var(--duration-short) ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.banner__buttons .button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.banner__buttons .button:hover::before {
+  left: 100%;
+}
+
+.banner__buttons .button:hover {
+  transform: translateY(-0.2rem);
+  box-shadow: 0 0.8rem 2.4rem rgba(var(--color-shadow), 0.2);
+}
+
+/* Mobile Responsive */
+@media screen and (max-width: 749px) {
+  .banner__features-grid {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .banner__feature {
+    width: 100%;
+    max-width: 25rem;
+    justify-content: center;
+  }
+
+  .banner__badge {
+    top: 1rem;
+    right: 1rem;
+  }
+
+  .banner__badge-content {
+    padding: 0.8rem 1.2rem;
+  }
+
+  .banner__badge-text {
+    font-size: 1.1rem;
+  }
+
+  .banner__badge-subtext {
+    font-size: 0.9rem;
   }
 }

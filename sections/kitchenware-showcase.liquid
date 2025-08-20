@@ -1,0 +1,250 @@
+{{ 'section-kitchenware-showcase.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+
+  .kitchenware-showcase-{{ section.id }} {
+    background: {{ section.settings.background_color }};
+    {% if section.settings.background_gradient != blank %}
+      background: {{ section.settings.background_gradient }};
+    {% endif %}
+  }
+{%- endstyle -%}
+
+<div class="kitchenware-showcase kitchenware-showcase-{{ section.id }} color-{{ section.settings.color_scheme }} gradient">
+  <div class="page-width section-{{ section.id }}-padding isolate">
+    {%- if section.settings.heading != blank -%}
+      <div class="kitchenware-showcase__header center">
+        <h2 class="kitchenware-showcase__heading inline-richtext {{ section.settings.heading_size }}">
+          {{ section.settings.heading }}
+        </h2>
+        {%- if section.settings.subheading != blank -%}
+          <p class="kitchenware-showcase__subheading">{{ section.settings.subheading }}</p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- if section.blocks.size > 0 -%}
+      <div class="kitchenware-showcase__grid">
+        {%- for block in section.blocks -%}
+          <div class="kitchenware-showcase__item" {{ block.shopify_attributes }}>
+            <div class="kitchenware-card">
+              {%- if block.settings.image != blank -%}
+                <div class="kitchenware-card__image">
+                  {{
+                    block.settings.image
+                    | image_url: width: 400
+                    | image_tag:
+                      loading: 'lazy',
+                      width: 200,
+                      height: 200,
+                      alt: block.settings.image.alt | escape
+                  }}
+                </div>
+              {%- endif -%}
+              
+              <div class="kitchenware-card__content">
+                {%- if block.settings.category != blank -%}
+                  <span class="kitchenware-card__category">{{ block.settings.category }}</span>
+                {%- endif -%}
+                
+                {%- if block.settings.title != blank -%}
+                  <h3 class="kitchenware-card__title">{{ block.settings.title }}</h3>
+                {%- endif -%}
+                
+                {%- if block.settings.description != blank -%}
+                  <p class="kitchenware-card__description">{{ block.settings.description }}</p>
+                {%- endif -%}
+                
+                {%- if block.settings.features != blank -%}
+                  <div class="kitchenware-card__features">
+                    {{ block.settings.features }}
+                  </div>
+                {%- endif -%}
+                
+                {%- if block.settings.button_text != blank and block.settings.button_link != blank -%}
+                  <div class="kitchenware-card__button">
+                    <a href="{{ block.settings.button_link }}" class="button button--primary">
+                      {{ block.settings.button_text }}
+                    </a>
+                  </div>
+                {%- endif -%}
+              </div>
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Kitchenware Showcase",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "default": "Premium Kitchenware Collection",
+      "label": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "default": "Discover our carefully curated selection of professional-grade kitchen tools and cookware",
+      "label": "Subheading"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h2",
+          "label": "Small"
+        },
+        {
+          "value": "h1",
+          "label": "Medium"
+        },
+        {
+          "value": "h0",
+          "label": "Large"
+        }
+      ],
+      "default": "h1",
+      "label": "Heading size"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "background-1"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "color_background",
+      "id": "background_gradient",
+      "label": "Background gradient"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 36
+    }
+  ],
+  "blocks": [
+    {
+      "type": "category",
+      "name": "Product Category",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Category image"
+        },
+        {
+          "type": "text",
+          "id": "category",
+          "label": "Category name",
+          "default": "Cookware"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Professional Cookware Set"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "High-quality stainless steel cookware designed for professional chefs and home cooking enthusiasts."
+        },
+        {
+          "type": "richtext",
+          "id": "features",
+          "label": "Key features",
+          "default": "<ul><li>Stainless steel construction</li><li>Heat-resistant handles</li><li>Dishwasher safe</li><li>Lifetime warranty</li></ul>"
+        },
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Button text",
+          "default": "Shop Now"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Kitchenware Showcase",
+      "blocks": [
+        {
+          "type": "category"
+        },
+        {
+          "type": "category",
+          "settings": {
+            "category": "Bakeware",
+            "title": "Premium Baking Collection",
+            "description": "Professional-grade baking tools and accessories for perfect results every time.",
+            "features": "<ul><li>Non-stick coating</li><li>Even heat distribution</li><li>Easy release</li><li>Oven safe to 450°F</li></ul>"
+          }
+        },
+        {
+          "type": "category",
+          "settings": {
+            "category": "Cutlery",
+            "title": "Sharp & Durable Knives",
+            "description": "Precision-forged knives that stay sharp longer and make food preparation effortless.",
+            "features": "<ul><li>High-carbon steel</li><li>Ergonomic handles</li><li>Razor-sharp edge</li><li>Professional grade</li></ul>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

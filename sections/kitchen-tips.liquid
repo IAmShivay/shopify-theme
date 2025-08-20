@@ -1,0 +1,224 @@
+{{ 'section-kitchen-tips.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+
+  .kitchen-tips-{{ section.id }} {
+    background: {{ section.settings.background_color }};
+    {% if section.settings.background_gradient != blank %}
+      background: {{ section.settings.background_gradient }};
+    {% endif %}
+  }
+{%- endstyle -%}
+
+<div class="kitchen-tips kitchen-tips-{{ section.id }} color-{{ section.settings.color_scheme }} gradient">
+  <div class="page-width section-{{ section.id }}-padding isolate">
+    {%- if section.settings.heading != blank -%}
+      <div class="kitchen-tips__header center">
+        <h2 class="kitchen-tips__heading inline-richtext {{ section.settings.heading_size }}">
+          {{ section.settings.heading }}
+        </h2>
+        {%- if section.settings.subheading != blank -%}
+          <p class="kitchen-tips__subheading">{{ section.settings.subheading }}</p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- if section.blocks.size > 0 -%}
+      <div class="kitchen-tips__grid">
+        {%- for block in section.blocks -%}
+          <div class="kitchen-tips__item" {{ block.shopify_attributes }}>
+            <div class="tip-card">
+              {%- if block.settings.icon != blank -%}
+                <div class="tip-card__icon">
+                  {{ block.settings.icon }}
+                </div>
+              {%- endif -%}
+              
+              <div class="tip-card__content">
+                {%- if block.settings.title != blank -%}
+                  <h3 class="tip-card__title">{{ block.settings.title }}</h3>
+                {%- endif -%}
+                
+                {%- if block.settings.description != blank -%}
+                  <p class="tip-card__description">{{ block.settings.description }}</p>
+                {%- endif -%}
+                
+                {%- if block.settings.tip_text != blank -%}
+                  <div class="tip-card__tip">
+                    <span class="tip-card__tip-label">Pro Tip:</span>
+                    <p class="tip-card__tip-text">{{ block.settings.tip_text }}</p>
+                  </div>
+                {%- endif -%}
+              </div>
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Kitchen Tips",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "default": "Expert Kitchen Tips",
+      "label": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "default": "Professional cooking techniques and tips to elevate your culinary skills",
+      "label": "Subheading"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h2",
+          "label": "Small"
+        },
+        {
+          "value": "h1",
+          "label": "Medium"
+        },
+        {
+          "value": "h0",
+          "label": "Large"
+        }
+      ],
+      "default": "h1",
+      "label": "Heading size"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "background-1"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "color_background",
+      "id": "background_gradient",
+      "label": "Background gradient"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 36
+    }
+  ],
+  "blocks": [
+    {
+      "type": "tip",
+      "name": "Kitchen Tip",
+      "settings": [
+        {
+          "type": "text",
+          "id": "icon",
+          "label": "Icon (emoji or text)",
+          "default": "👨‍🍳"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Knife Skills"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Master the art of proper knife techniques for safer and more efficient food preparation."
+        },
+        {
+          "type": "textarea",
+          "id": "tip_text",
+          "label": "Pro tip",
+          "default": "Always keep your knives sharp - a dull knife is more dangerous than a sharp one!"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Kitchen Tips",
+      "blocks": [
+        {
+          "type": "tip"
+        },
+        {
+          "type": "tip",
+          "settings": {
+            "icon": "🔥",
+            "title": "Heat Control",
+            "description": "Understanding heat levels is crucial for perfect cooking results every time.",
+            "tip_text": "Let your pan heat up properly before adding oil - this prevents sticking and ensures even cooking."
+          }
+        },
+        {
+          "type": "tip",
+          "settings": {
+            "icon": "🧂",
+            "title": "Seasoning Secrets",
+            "description": "Learn when and how to season your food for maximum flavor impact.",
+            "tip_text": "Season in layers throughout cooking, not just at the end - this builds complex flavors."
+          }
+        },
+        {
+          "type": "tip",
+          "settings": {
+            "icon": "⏰",
+            "title": "Timing is Everything",
+            "description": "Perfect timing can make the difference between good and great dishes.",
+            "tip_text": "Use a timer for everything, even experienced chefs rely on them for consistency."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

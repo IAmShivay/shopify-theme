@@ -1,0 +1,323 @@
+{{ 'section-featured-products-grid.css' | asset_url | stylesheet_tag }}
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
+{{ 'component-price.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+
+  .featured-products-grid-{{ section.id }} {
+    background: {{ section.settings.background_color }};
+    {% if section.settings.background_gradient != blank %}
+      background: {{ section.settings.background_gradient }};
+    {% endif %}
+  }
+{%- endstyle -%}
+
+<div class="featured-products-grid featured-products-grid-{{ section.id }} color-{{ section.settings.color_scheme }} gradient">
+  <div class="page-width section-{{ section.id }}-padding isolate">
+    {%- if section.settings.heading != blank -%}
+      <div class="featured-products-grid__header center">
+        <h2 class="featured-products-grid__heading inline-richtext {{ section.settings.heading_size }}">
+          {{ section.settings.heading }}
+        </h2>
+        {%- if section.settings.subheading != blank -%}
+          <p class="featured-products-grid__subheading">{{ section.settings.subheading }}</p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- if section.blocks.size > 0 -%}
+      <div class="featured-products-grid__container">
+        {%- for block in section.blocks -%}
+          {%- if block.settings.product != blank -%}
+            {%- assign product = block.settings.product -%}
+            <div class="featured-products-grid__item" {{ block.shopify_attributes }}>
+              <div class="product-card-wrapper">
+                <div class="product-card">
+                  <div class="product-card__image">
+                    {%- if product.featured_media -%}
+                      <a href="{{ product.url }}">
+                        {{
+                          product.featured_media
+                          | image_url: width: 600
+                          | image_tag:
+                            loading: 'lazy',
+                            width: 300,
+                            height: 300,
+                            alt: product.featured_media.alt | escape
+                        }}
+                      </a>
+                    {%- else -%}
+                      <div class="product-card__placeholder">
+                        {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                      </div>
+                    {%- endif -%}
+                    
+                    {%- if product.compare_at_price > product.price -%}
+                      <div class="product-card__badge">
+                        <span class="badge badge--sale">
+                          {{ product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round }}% OFF
+                        </span>
+                      </div>
+                    {%- endif -%}
+                    
+                    <div class="product-card__actions">
+                      <button class="product-card__quick-view button button--secondary" data-product-url="{{ product.url }}">
+                        Quick View
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div class="product-card__content">
+                    {%- if product.vendor != blank and section.settings.show_vendor -%}
+                      <div class="product-card__vendor">{{ product.vendor }}</div>
+                    {%- endif -%}
+                    
+                    <h3 class="product-card__title">
+                      <a href="{{ product.url }}">{{ product.title }}</a>
+                    </h3>
+                    
+                    <div class="product-card__price">
+                      {%- render 'price', product: product, use_variant: true, show_badges: true -%}
+                    </div>
+                    
+                    {%- if product.available -%}
+                      <form action="/cart/add" method="post" enctype="multipart/form-data" class="product-card__form">
+                        <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+                        <button type="submit" class="product-card__add-to-cart button button--primary">
+                          <span class="btn-text">Add to Cart</span>
+                          <span class="btn-loading" style="display: none;">Adding...</span>
+                        </button>
+                      </form>
+                    {%- else -%}
+                      <button class="product-card__add-to-cart button button--secondary" disabled>
+                        Sold Out
+                      </button>
+                    {%- endif -%}
+                  </div>
+                </div>
+              </div>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+    
+    {%- if section.settings.show_view_all and section.settings.collection != blank -%}
+      <div class="featured-products-grid__view-all center">
+        <a href="{{ section.settings.collection.url }}" class="button button--primary button--large">
+          View All {{ section.settings.collection.title }}
+        </a>
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Add to cart functionality
+  const addToCartForms = document.querySelectorAll('.product-card__form');
+  
+  addToCartForms.forEach(form => {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const button = form.querySelector('.product-card__add-to-cart');
+      const btnText = button.querySelector('.btn-text');
+      const btnLoading = button.querySelector('.btn-loading');
+      
+      // Show loading state
+      btnText.style.display = 'none';
+      btnLoading.style.display = 'inline';
+      button.disabled = true;
+      
+      // Submit form data
+      fetch('/cart/add.js', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: form.querySelector('input[name="id"]').value,
+          quantity: 1
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Reset button state
+        btnText.style.display = 'inline';
+        btnLoading.style.display = 'none';
+        button.disabled = false;
+        
+        // Show success message
+        btnText.textContent = 'Added!';
+        setTimeout(() => {
+          btnText.textContent = 'Add to Cart';
+        }, 2000);
+        
+        // Update cart count if cart drawer exists
+        if (window.theme && window.theme.cartDrawer) {
+          window.theme.cartDrawer.refresh();
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        // Reset button state
+        btnText.style.display = 'inline';
+        btnLoading.style.display = 'none';
+        button.disabled = false;
+      });
+    });
+  });
+});
+</script>
+
+{% schema %}
+{
+  "name": "Featured Products Grid",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "default": "Featured Products",
+      "label": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "default": "Discover our most popular kitchen essentials",
+      "label": "Subheading"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h2",
+          "label": "Small"
+        },
+        {
+          "value": "h1",
+          "label": "Medium"
+        },
+        {
+          "value": "h0",
+          "label": "Large"
+        }
+      ],
+      "default": "h1",
+      "label": "Heading size"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "default": false,
+      "label": "Show product vendor"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "default": true,
+      "label": "Show 'View all' button"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection for 'View all' button"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "background-1"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "color_background",
+      "id": "background_gradient",
+      "label": "Background gradient"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 36
+    }
+  ],
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Product",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Products Grid",
+      "blocks": [
+        {
+          "type": "product"
+        },
+        {
+          "type": "product"
+        },
+        {
+          "type": "product"
+        },
+        {
+          "type": "product"
+        },
+        {
+          "type": "product"
+        },
+        {
+          "type": "product"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

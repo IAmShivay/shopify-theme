@@ -1,0 +1,198 @@
+{{ 'section-all-recipes.css' | asset_url | stylesheet_tag }}
+
+<div class="all-recipes color-background-1 gradient">
+  <div class="page-width section-padding isolate">
+    <!-- Page Header -->
+    <div class="all-recipes__header center">
+      <h1 class="all-recipes__title">All Recipes</h1>
+      <p class="all-recipes__description">
+        Discover delicious recipes using our premium kitchenware collection
+      </p>
+    </div>
+
+    <!-- Filter Tabs -->
+    <div class="all-recipes__filters">
+      <button class="all-recipes__filter-btn active" data-filter="all">All Recipes</button>
+      <button class="all-recipes__filter-btn" data-filter="breakfast">Breakfast</button>
+      <button class="all-recipes__filter-btn" data-filter="lunch">Lunch</button>
+      <button class="all-recipes__filter-btn" data-filter="dinner">Dinner</button>
+      <button class="all-recipes__filter-btn" data-filter="dessert">Dessert</button>
+      <button class="all-recipes__filter-btn" data-filter="snacks">Snacks</button>
+    </div>
+
+    <!-- Recipes Grid -->
+    {%- liquid
+      assign all_recipes = shop.metaobjects.recipe.values
+    -%}
+
+    {%- if all_recipes.size > 0 -%}
+      <div class="all-recipes__grid" id="recipes-grid">
+        {%- for recipe in all_recipes -%}
+          <div class="all-recipes__item recipe-item" data-category="{{ recipe.category.value | downcase | default: 'other' }}">
+            <div class="recipe-card">
+              <div class="recipe-card__image">
+                {%- if recipe.featured_image -%}
+                  <a href="/pages/recipe?id={{ recipe.id }}">
+                    {{
+                      recipe.featured_image
+                      | image_url: width: 600
+                      | image_tag:
+                        loading: 'lazy',
+                        width: 300,
+                        height: 200,
+                        alt: recipe.featured_image.alt | escape
+                    }}
+                  </a>
+                {%- endif -%}
+                
+                <div class="recipe-card__overlay">
+                  <div class="recipe-card__meta">
+                    {%- if recipe.cooking_time -%}
+                      <span class="recipe-card__time">
+                        <span class="recipe-card__time-icon">⏱️</span>
+                        {{ recipe.cooking_time.value }} min
+                      </span>
+                    {%- endif -%}
+                    {%- if recipe.difficulty -%}
+                      <span class="recipe-card__difficulty recipe-card__difficulty--{{ recipe.difficulty.value | downcase }}">
+                        {{ recipe.difficulty.value }}
+                      </span>
+                    {%- endif -%}
+                  </div>
+                </div>
+              </div>
+              
+              <div class="recipe-card__content">
+                {%- if recipe.category -%}
+                  <div class="recipe-card__category">{{ recipe.category.value }}</div>
+                {%- endif -%}
+                
+                <h3 class="recipe-card__title">
+                  <a href="/pages/recipe?id={{ recipe.id }}">{{ recipe.title.value }}</a>
+                </h3>
+                
+                {%- if recipe.description -%}
+                  <p class="recipe-card__description">
+                    {{ recipe.description.value | strip_html | truncate: 120 }}
+                  </p>
+                {%- endif -%}
+                
+                <div class="recipe-card__stats">
+                  {%- if recipe.servings -%}
+                    <span class="recipe-card__stat">
+                      <span class="recipe-card__stat-icon">👥</span>
+                      {{ recipe.servings.value }} servings
+                    </span>
+                  {%- endif -%}
+                  {%- if recipe.prep_time -%}
+                    <span class="recipe-card__stat">
+                      <span class="recipe-card__stat-icon">🔪</span>
+                      {{ recipe.prep_time.value }} min prep
+                    </span>
+                  {%- endif -%}
+                </div>
+                
+                <div class="recipe-card__button">
+                  <a href="/pages/recipe?id={{ recipe.id }}" class="button button--primary">
+                    View Recipe
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+
+      <!-- Load More Button -->
+      <div class="all-recipes__load-more center" style="display: none;">
+        <button class="button button--secondary" id="load-more-btn">
+          Load More Recipes
+        </button>
+      </div>
+    {%- else -%}
+      <div class="all-recipes__empty">
+        <div class="all-recipes__empty-icon">🍳</div>
+        <h2>No Recipes Yet</h2>
+        <p>We're working on adding delicious recipes for you. Check back soon!</p>
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const filterButtons = document.querySelectorAll('.all-recipes__filter-btn');
+  const recipeItems = document.querySelectorAll('.recipe-item');
+  const recipesGrid = document.getElementById('recipes-grid');
+  
+  // Filter functionality
+  filterButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      const filter = this.getAttribute('data-filter');
+      
+      // Update active button
+      filterButtons.forEach(btn => btn.classList.remove('active'));
+      this.classList.add('active');
+      
+      // Filter recipes
+      recipeItems.forEach(item => {
+        const category = item.getAttribute('data-category');
+        
+        if (filter === 'all' || category === filter) {
+          item.style.display = 'block';
+          item.style.animation = 'fadeInUp 0.5s ease forwards';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    });
+  });
+  
+  // Animate recipe cards on scroll
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  };
+  
+  const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, observerOptions);
+  
+  recipeItems.forEach(item => {
+    item.style.opacity = '0';
+    item.style.transform = 'translateY(30px)';
+    item.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    observer.observe(item);
+  });
+});
+</script>
+
+<style>
+.section-padding {
+  padding-top: 5rem;
+  padding-bottom: 5rem;
+}
+
+@media screen and (min-width: 750px) {
+  .section-padding {
+    padding-top: 7rem;
+    padding-bottom: 7rem;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+</style>

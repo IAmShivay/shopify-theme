@@ -1,0 +1,291 @@
+.before-after {
+  position: relative;
+  overflow: hidden;
+}
+
+.before-after::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(212, 165, 116, 0.02) 0%, rgba(196, 154, 91, 0.04) 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.before-after > * {
+  position: relative;
+  z-index: 1;
+}
+
+.before-after__header {
+  text-align: center;
+  margin-bottom: 5rem;
+}
+
+.before-after__heading {
+  margin-bottom: 1.5rem;
+  color: rgb(var(--color-foreground));
+}
+
+.before-after__subheading {
+  font-size: 1.6rem;
+  color: rgba(var(--color-foreground), 0.75);
+  max-width: 60rem;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+.before-after__grid {
+  display: grid;
+  gap: 4rem;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  margin-bottom: 4rem;
+}
+
+.before-after__item {
+  height: 100%;
+}
+
+.transformation-card {
+  background: rgb(var(--color-background));
+  border-radius: 2rem;
+  padding: 3rem;
+  height: 100%;
+  box-shadow: 0 1rem 3rem rgba(var(--color-shadow), 0.1);
+  border: 0.1rem solid rgba(var(--color-foreground), 0.08);
+  transition: all var(--duration-short) ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.transformation-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 0.4rem;
+  background: linear-gradient(90deg, rgba(var(--color-button), 0.6) 0%, rgba(var(--color-button), 0.3) 100%);
+}
+
+.transformation-card:hover {
+  transform: translateY(-0.5rem);
+  box-shadow: 0 1.5rem 4rem rgba(var(--color-shadow), 0.15);
+}
+
+.transformation-card__images {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.transformation-card__before,
+.transformation-card__after {
+  position: relative;
+  flex: 1;
+  text-align: center;
+}
+
+.transformation-card__before img,
+.transformation-card__after img {
+  width: 100%;
+  max-width: 15rem;
+  height: 15rem;
+  object-fit: cover;
+  border-radius: 1rem;
+  border: 0.2rem solid rgba(var(--color-foreground), 0.1);
+  transition: all var(--duration-short) ease;
+}
+
+.transformation-card:hover .transformation-card__before img,
+.transformation-card:hover .transformation-card__after img {
+  border-color: rgba(var(--color-button), 0.3);
+  transform: scale(1.02);
+}
+
+.transformation-card__label {
+  position: absolute;
+  bottom: -1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.5rem 1.2rem;
+  border-radius: 2rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.transformation-card__label--before {
+  background: rgba(255, 99, 99, 0.9);
+  color: white;
+}
+
+.transformation-card__label--after {
+  background: rgba(76, 175, 80, 0.9);
+  color: white;
+}
+
+.transformation-card__divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.transformation-card__arrow {
+  font-size: 3rem;
+  color: rgba(var(--color-button), 0.8);
+  font-weight: bold;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+
+.transformation-card__content {
+  text-align: center;
+}
+
+.transformation-card__title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: rgb(var(--color-foreground));
+  margin-bottom: 1rem;
+}
+
+.transformation-card__timeframe {
+  font-size: 1.4rem;
+  color: rgba(var(--color-button), 0.8);
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.transformation-card__description {
+  font-size: 1.5rem;
+  color: rgba(var(--color-foreground), 0.75);
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.transformation-card__product {
+  padding-top: 2rem;
+  border-top: 0.1rem solid rgba(var(--color-foreground), 0.1);
+}
+
+.transformation-card__product-label {
+  font-size: 1.3rem;
+  color: rgba(var(--color-foreground), 0.6);
+  font-weight: 500;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.transformation-card__product-link {
+  font-size: 1.5rem;
+  color: rgb(var(--color-button));
+  text-decoration: none;
+  font-weight: 600;
+  transition: color var(--duration-short) ease;
+}
+
+.transformation-card__product-link:hover {
+  color: rgba(var(--color-button), 0.8);
+  text-decoration: underline;
+}
+
+.before-after__disclaimer {
+  text-align: center;
+  padding: 2rem;
+  background: rgba(var(--color-foreground), 0.03);
+  border-radius: 1rem;
+  border: 0.1rem solid rgba(var(--color-foreground), 0.08);
+}
+
+.before-after__disclaimer p {
+  font-size: 1.3rem;
+  color: rgba(var(--color-foreground), 0.6);
+  font-style: italic;
+  margin: 0;
+}
+
+/* Mobile styles */
+@media screen and (max-width: 749px) {
+  .before-after__header {
+    margin-bottom: 3rem;
+  }
+  
+  .before-after__subheading {
+    font-size: 1.4rem;
+  }
+  
+  .before-after__grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+  
+  .transformation-card {
+    padding: 2rem;
+  }
+  
+  .transformation-card__images {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .transformation-card__divider {
+    transform: rotate(90deg);
+  }
+  
+  .transformation-card__before img,
+  .transformation-card__after img {
+    max-width: 12rem;
+    height: 12rem;
+  }
+  
+  .transformation-card__title {
+    font-size: 1.8rem;
+  }
+}
+
+/* Tablet styles */
+@media screen and (min-width: 750px) and (max-width: 989px) {
+  .before-after__grid {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+}
+
+/* Animation */
+@media (prefers-reduced-motion: no-preference) {
+  .transformation-card {
+    opacity: 0;
+    transform: translateY(2rem);
+    animation: slideInUp 0.8s ease forwards;
+  }
+  
+  .before-after__item:nth-child(2) .transformation-card {
+    animation-delay: 0.2s;
+  }
+  
+  .before-after__item:nth-child(3) .transformation-card {
+    animation-delay: 0.4s;
+  }
+}
+
+@keyframes slideInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

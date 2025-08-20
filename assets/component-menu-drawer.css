@@ -34,8 +34,10 @@ menu-drawer > details[open] > summary::before {
   top: 100%;
   width: 100%;
   padding: 0;
-  background-color: rgb(var(--color-background));
+  background: linear-gradient(135deg, rgb(var(--color-background)) 0%, rgba(var(--color-background), 0.98) 100%);
+  backdrop-filter: blur(10px);
   overflow-x: hidden;
+  border-top: 0.2rem solid rgba(var(--color-button), 0.3);
   filter: drop-shadow(
     var(--drawer-shadow-horizontal-offset) var(--drawer-shadow-vertical-offset) var(--drawer-shadow-blur-radius)
       rgba(var(--color-shadow), var(--drawer-shadow-opacity))
@@ -99,9 +101,28 @@ details[open].menu-opening > .menu-drawer__submenu {
 }
 
 .menu-drawer__menu-item {
-  padding: 1.1rem 3rem;
+  padding: 1.3rem 3rem;
   text-decoration: none;
-  font-size: 1.8rem;
+  font-size: 1.7rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  transition: all var(--duration-short) ease;
+  position: relative;
+  border-radius: 0.8rem;
+  margin: 0.3rem 1rem;
+}
+
+.menu-drawer__menu-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0.3rem;
+  height: 0;
+  background: linear-gradient(180deg, rgba(var(--color-button), 1) 0%, rgba(var(--color-button), 0.6) 100%);
+  border-radius: 0 0.2rem 0.2rem 0;
+  transition: height var(--duration-short) ease;
 }
 
 .menu-drawer summary.menu-drawer__menu-item {
@@ -113,12 +134,18 @@ details[open].menu-opening > .menu-drawer__submenu {
 .menu-drawer__close-button:focus,
 .menu-drawer__menu-item:hover,
 .menu-drawer__close-button:hover {
-  color: rgb(var(--color-foreground));
-  background-color: rgba(var(--color-foreground), 0.04);
+  color: rgb(var(--color-button));
+  background: linear-gradient(135deg, rgba(var(--color-button), 0.08) 0%, rgba(var(--color-button), 0.12) 100%);
+  transform: translateX(0.5rem);
+}
+
+.menu-drawer__menu-item:hover::before,
+.menu-drawer__menu-item--active::before {
+  height: 60%;
 }
 
 .menu-drawer__menu-item--active:hover {
-  background-color: rgba(var(--color-foreground), 0.08);
+  background: linear-gradient(135deg, rgba(var(--color-button), 0.12) 0%, rgba(var(--color-button), 0.16) 100%);
 }
 
 .js .menu-drawer__menu-item .icon-caret {

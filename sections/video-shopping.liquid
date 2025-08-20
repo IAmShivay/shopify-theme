@@ -1,0 +1,345 @@
+{{ 'section-video-shopping.css' | asset_url | stylesheet_tag }}
+{{ 'component-deferred-media.css' | asset_url | stylesheet_tag }}
+{{ 'component-slider.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+
+  .video-shopping-{{ section.id }} {
+    background: {{ section.settings.background_color }};
+    {% if section.settings.background_gradient != blank %}
+      background: {{ section.settings.background_gradient }};
+    {% endif %}
+  }
+{%- endstyle -%}
+
+<div class="video-shopping video-shopping-{{ section.id }} color-{{ section.settings.color_scheme }} gradient">
+  <div class="page-width section-{{ section.id }}-padding isolate">
+    <div class="video-shopping__container">
+      <div class="video-shopping__content">
+        {%- if section.settings.heading != blank -%}
+          <h2 class="video-shopping__heading {{ section.settings.heading_size }}">
+            {{ section.settings.heading }}
+          </h2>
+        {%- endif -%}
+        
+        {%- if section.settings.description != blank -%}
+          <div class="video-shopping__description rte">
+            {{ section.settings.description }}
+          </div>
+        {%- endif -%}
+
+        {%- if section.blocks.size > 0 -%}
+          <div class="video-shopping__products">
+            <h3 class="video-shopping__products-title">Featured in this video:</h3>
+            <slider-component class="slider-mobile-gutter">
+              <ul
+                class="video-shopping__products-slider contains-scroll-bar grid grid--1-col slider slider--tablet grid--3-col-tablet slider--desktop"
+                id="Slider-{{ section.id }}"
+                role="list"
+              >
+                {%- for block in section.blocks -%}
+                  {%- if block.settings.product != blank -%}
+                    {%- assign product = block.settings.product -%}
+                    <li
+                      id="Slide-{{ section.id }}-{{ forloop.index }}"
+                      class="video-shopping__product-slide grid__item slider__slide"
+                      {{ block.shopify_attributes }}
+                    >
+                      <div class="video-shopping__product-card">
+                        <div class="video-shopping__product-image">
+                          {%- if product.featured_media -%}
+                            <a href="{{ product.url }}">
+                              {{
+                                product.featured_media
+                                | image_url: width: 300
+                                | image_tag:
+                                  loading: 'lazy',
+                                  width: 150,
+                                  height: 150,
+                                  alt: product.featured_media.alt | escape
+                              }}
+                            </a>
+                          {%- endif -%}
+                          {%- if product.compare_at_price > product.price -%}
+                            <div class="video-shopping__product-badge">
+                              <span class="badge badge--sale">Sale</span>
+                            </div>
+                          {%- endif -%}
+                        </div>
+                        <div class="video-shopping__product-info">
+                          <h4 class="video-shopping__product-title">
+                            <a href="{{ product.url }}">{{ product.title | truncate: 40 }}</a>
+                          </h4>
+                          <div class="video-shopping__product-price">
+                            {%- render 'price', product: product, use_variant: true, show_badges: false -%}
+                          </div>
+                          {%- if product.available -%}
+                            <a href="{{ product.url }}" class="video-shopping__product-button button button--primary">
+                              Shop Now
+                            </a>
+                          {%- else -%}
+                            <button class="video-shopping__product-button button button--secondary" disabled>
+                              Sold Out
+                            </button>
+                          {%- endif -%}
+                        </div>
+                      </div>
+                    </li>
+                  {%- endif -%}
+                {%- endfor -%}
+              </ul>
+
+              {%- if section.blocks.size > 3 -%}
+                <div class="slider-buttons no-js-hidden">
+                  <button
+                    type="button"
+                    class="slider-button slider-button--prev"
+                    name="previous"
+                    aria-label="Previous slide"
+                  >
+                    <span class="svg-wrapper">
+                      {{- 'icon-caret.svg' | inline_asset_content -}}
+                    </span>
+                  </button>
+                  <div class="slider-counter caption">
+                    <span class="slider-counter--current">1</span>
+                    <span aria-hidden="true"> / </span>
+                    <span class="visually-hidden">of</span>
+                    <span class="slider-counter--total">{{ section.blocks.size }}</span>
+                  </div>
+                  <button
+                    type="button"
+                    class="slider-button slider-button--next"
+                    name="next"
+                    aria-label="Next slide"
+                  >
+                    <span class="svg-wrapper">
+                      {{- 'icon-caret.svg' | inline_asset_content -}}
+                    </span>
+                  </button>
+                </div>
+              {%- endif -%}
+            </slider-component>
+          </div>
+        {%- endif -%}
+      </div>
+
+      <div class="video-shopping__media">
+        {%- if section.settings.video_url != blank -%}
+          <deferred-media class="video-shopping__video deferred-media no-js-hidden" data-media-id="{{ section.settings.video_url.id }}">
+            <button
+              id="Deferred-Poster-Modal-{{ section.settings.video_url.id }}"
+              class="video-shopping__video-button deferred-media__poster"
+              type="button"
+            >
+              <span class="deferred-media__poster-button motion-reduce">
+                <span class="svg-wrapper">
+                  {{- 'icon-play.svg' | inline_asset_content -}}
+                </span>
+              </span>
+              {%- if section.settings.cover_image != blank -%}
+                {{
+                  section.settings.cover_image
+                  | image_url: width: 1920
+                  | image_tag:
+                    loading: 'lazy',
+                    sizes: '(min-width: 1200px) 1100px, (min-width: 750px) calc(100vw - 10rem), calc(100vw - 4rem)',
+                    widths: '375, 750, 1100, 1500, 1780, 2000, 3000, 3840',
+                    alt: section.settings.cover_image.alt | escape
+                }}
+              {%- else -%}
+                {{
+                  section.settings.video_url.preview_image
+                  | image_url: width: 1920
+                  | image_tag:
+                    loading: 'lazy',
+                    sizes: '(min-width: 1200px) 1100px, (min-width: 750px) calc(100vw - 10rem), calc(100vw - 4rem)',
+                    widths: '375, 750, 1100, 1500, 1780, 2000, 3000, 3840',
+                    alt: section.settings.video_url.preview_image.alt | escape
+                }}
+              {%- endif -%}
+            </button>
+            <template>
+              {%- if section.settings.video_url.type == 'youtube' -%}
+                <iframe
+                  src="https://www.youtube.com/embed/{{ section.settings.video_url.id }}?enablejsapi=1"
+                  class="js-youtube"
+                  allow="autoplay; encrypted-media"
+                  allowfullscreen
+                  title="{{ section.settings.description | escape }}"
+                ></iframe>
+              {%- else -%}
+                <iframe
+                  src="https://player.vimeo.com/video/{{ section.settings.video_url.id }}"
+                  class="js-vimeo"
+                  allow="autoplay; encrypted-media"
+                  allowfullscreen
+                  title="{{ section.settings.description | escape }}"
+                ></iframe>
+              {%- endif -%}
+            </template>
+          </deferred-media>
+        {%- elsif section.settings.video_file != blank -%}
+          <video
+            class="video-shopping__video-file"
+            autoplay
+            muted
+            loop
+            playsinline
+            {% if section.settings.cover_image != blank %}
+              poster="{{ section.settings.cover_image | image_url: width: 1920 }}"
+            {% endif %}
+          >
+            <source src="{{ section.settings.video_file | file_url }}" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Video Shopping",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "default": "See Our Products in Action",
+      "label": "Heading"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "default": "<p>Watch how our natural skincare products transform your daily routine. Discover the power of turmeric and organic ingredients.</p>",
+      "label": "Description"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h2",
+          "label": "Small"
+        },
+        {
+          "value": "h1",
+          "label": "Medium"
+        },
+        {
+          "value": "h0",
+          "label": "Large"
+        }
+      ],
+      "default": "h1",
+      "label": "Heading size"
+    },
+    {
+      "type": "header",
+      "content": "Video Settings"
+    },
+    {
+      "type": "video_url",
+      "id": "video_url",
+      "accept": ["youtube", "vimeo"],
+      "label": "Video URL (YouTube or Vimeo)"
+    },
+    {
+      "type": "video",
+      "id": "video_file",
+      "label": "Video file (MP4)"
+    },
+    {
+      "type": "image_picker",
+      "id": "cover_image",
+      "label": "Cover image"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "background-1"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "color_background",
+      "id": "background_gradient",
+      "label": "Background gradient"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 36
+    }
+  ],
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Featured Product",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Video Shopping",
+      "blocks": [
+        {
+          "type": "product"
+        },
+        {
+          "type": "product"
+        },
+        {
+          "type": "product"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

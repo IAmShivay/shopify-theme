@@ -1,0 +1,204 @@
+{
+  "metaobject_definition": {
+    "name": "Recipe",
+    "type": "recipe",
+    "access": {
+      "storefront": "PUBLIC_READ"
+    },
+    "capabilities": {
+      "publishable": {
+        "enabled": true
+      }
+    },
+    "fields": [
+      {
+        "key": "title",
+        "name": "Recipe Title",
+        "type": "single_line_text_field",
+        "required": true,
+        "description": "The name of the recipe"
+      },
+      {
+        "key": "description",
+        "name": "Description",
+        "type": "multi_line_text_field",
+        "required": true,
+        "description": "Brief description of the recipe"
+      },
+      {
+        "key": "featured_image",
+        "name": "Featured Image",
+        "type": "file_reference",
+        "required": true,
+        "description": "Main recipe image"
+      },
+      {
+        "key": "category",
+        "name": "Category",
+        "type": "single_line_text_field",
+        "required": false,
+        "description": "Recipe category (e.g., Breakfast, Dinner, Dessert)"
+      },
+      {
+        "key": "prep_time",
+        "name": "Prep Time (minutes)",
+        "type": "number_integer",
+        "required": false,
+        "description": "Preparation time in minutes"
+      },
+      {
+        "key": "cooking_time",
+        "name": "Cooking Time (minutes)",
+        "type": "number_integer",
+        "required": false,
+        "description": "Cooking time in minutes"
+      },
+      {
+        "key": "servings",
+        "name": "Servings",
+        "type": "number_integer",
+        "required": false,
+        "description": "Number of servings"
+      },
+      {
+        "key": "difficulty",
+        "name": "Difficulty Level",
+        "type": "single_line_text_field",
+        "required": false,
+        "description": "Easy, Medium, or Hard"
+      },
+      {
+        "key": "ingredients",
+        "name": "Ingredients",
+        "type": "rich_text_field",
+        "required": true,
+        "description": "List of ingredients (use bullet points)"
+      },
+      {
+        "key": "instructions",
+        "name": "Instructions",
+        "type": "rich_text_field",
+        "required": true,
+        "description": "Step-by-step cooking instructions (use numbered list)"
+      },
+      {
+        "key": "chef_tips",
+        "name": "Chef's Tips",
+        "type": "rich_text_field",
+        "required": false,
+        "description": "Professional cooking tips and tricks"
+      },
+      {
+        "key": "nutrition_info",
+        "name": "Nutrition Information",
+        "type": "rich_text_field",
+        "required": false,
+        "description": "Nutritional information per serving"
+      },
+      {
+        "key": "related_products",
+        "name": "Related Kitchen Products",
+        "type": "list.product_reference",
+        "required": false,
+        "description": "Kitchen tools and products used in this recipe"
+      },
+      {
+        "key": "recipe_video",
+        "name": "Recipe Video URL",
+        "type": "url",
+        "required": false,
+        "description": "YouTube or Vimeo video URL"
+      },
+      {
+        "key": "tags",
+        "name": "Recipe Tags",
+        "type": "list.single_line_text_field",
+        "required": false,
+        "description": "Tags for filtering (e.g., vegetarian, gluten-free, quick)"
+      },
+      {
+        "key": "featured",
+        "name": "Featured Recipe",
+        "type": "boolean",
+        "required": false,
+        "description": "Mark as featured recipe"
+      },
+      {
+        "key": "published_date",
+        "name": "Published Date",
+        "type": "date",
+        "required": false,
+        "description": "When the recipe was published"
+      }
+    ]
+  }
+}
+
+// MANUAL SETUP INSTRUCTIONS:
+// Since Shopify doesn't allow direct JSON import for metaobjects,
+// you'll need to create this manually in the admin:
+
+// 1. Go to Settings → Custom Data → Metaobjects
+// 2. Click "Add definition"
+// 3. Set Name: "Recipe" and Type: "recipe"
+// 4. Enable "Storefront API access"
+// 5. Add each field listed above with the specified settings
+
+// FIELD SETUP DETAILS:
+
+// Basic Information Fields:
+// - title: Single line text (required)
+// - description: Multi-line text (required)  
+// - featured_image: File reference (required)
+// - category: Single line text (optional)
+
+// Timing & Difficulty Fields:
+// - prep_time: Number - Integer (optional)
+// - cooking_time: Number - Integer (optional)
+// - servings: Number - Integer (optional)
+// - difficulty: Single line text (optional) - Values: Easy, Medium, Hard
+
+// Content Fields:
+// - ingredients: Rich text (required)
+// - instructions: Rich text (required)
+// - chef_tips: Rich text (optional)
+// - nutrition_info: Rich text (optional)
+
+// Related Content Fields:
+// - related_products: List of product references (optional)
+// - recipe_video: URL (optional)
+// - tags: List of single line text (optional)
+
+// Publishing Fields:
+// - featured: Boolean (optional)
+// - published_date: Date (optional)
+
+// EXAMPLE RECIPE DATA:
+// Title: "Perfect Pasta Carbonara"
+// Description: "A classic Italian pasta dish with eggs, cheese, and pancetta"
+// Category: "Dinner"
+// Prep Time: 15
+// Cooking Time: 20
+// Servings: 4
+// Difficulty: "Medium"
+// Ingredients: 
+// • 400g spaghetti
+// • 200g pancetta, diced
+// • 4 large eggs
+// • 100g Pecorino Romano cheese, grated
+// • Black pepper to taste
+// • Salt for pasta water
+
+// Instructions:
+// 1. Bring a large pot of salted water to boil
+// 2. Cook spaghetti according to package directions
+// 3. Meanwhile, cook pancetta until crispy
+// 4. Whisk eggs with cheese and pepper
+// 5. Drain pasta, reserving 1 cup pasta water
+// 6. Toss hot pasta with pancetta and egg mixture
+// 7. Add pasta water as needed for creamy consistency
+// 8. Serve immediately with extra cheese
+
+// Chef's Tips: "The key is to work quickly and use the hot pasta to cook the eggs gently. Never let the eggs scramble!"
+
+// Tags: ["Italian", "Pasta", "Quick", "Comfort Food"]

@@ -99,5 +99,51 @@
         {%- endif -%}
       </li>
     {%- endfor -%}
+
+    {%- if section.settings.show_quick_links -%}
+      {%- if section.settings.show_about_link and section.settings.about_link != blank -%}
+        <li>
+          <a
+            href="{{ section.settings.about_link }}"
+            class="header__menu-item list-menu__item link link--text focus-inset header__quick-link"
+          >
+            <span>About Us</span>
+          </a>
+        </li>
+      {%- endif -%}
+
+      {%- if section.settings.show_contact_link and section.settings.contact_link != blank -%}
+        <li>
+          <a
+            href="{{ section.settings.contact_link }}"
+            class="header__menu-item list-menu__item link link--text focus-inset header__quick-link"
+          >
+            <span>Contact</span>
+          </a>
+        </li>
+      {%- endif -%}
+
+      {%- if section.settings.show_blog_link and section.settings.blog_link != blank -%}
+        <li>
+          <a
+            href="{{ section.settings.blog_link }}"
+            class="header__menu-item list-menu__item link link--text focus-inset header__quick-link"
+          >
+            <span>Blog</span>
+          </a>
+        </li>
+      {%- endif -%}
+
+      {%- if section.settings.show_faq_link and section.settings.faq_link != blank -%}
+        <li>
+          <a
+            href="{{ section.settings.faq_link }}"
+            class="header__menu-item list-menu__item link link--text focus-inset header__quick-link"
+          >
+            <span>FAQ</span>
+          </a>
+        </li>
+      {%- endif -%}
+    {%- endif -%}
   </ul>
 </nav>

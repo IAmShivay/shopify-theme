@@ -1,0 +1,365 @@
+{{ 'section-featured-recipes.css' | asset_url | stylesheet_tag }}
+{{ 'component-slider.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+
+  .featured-recipes-{{ section.id }} {
+    background: {{ section.settings.background_color }};
+    {% if section.settings.background_gradient != blank %}
+      background: {{ section.settings.background_gradient }};
+    {% endif %}
+  }
+{%- endstyle -%}
+
+<div class="featured-recipes featured-recipes-{{ section.id }} color-{{ section.settings.color_scheme }} gradient">
+  <div class="page-width section-{{ section.id }}-padding isolate">
+    {%- if section.settings.heading != blank -%}
+      <div class="featured-recipes__header center">
+        <h2 class="featured-recipes__heading inline-richtext {{ section.settings.heading_size }}">
+          {{ section.settings.heading }}
+        </h2>
+        {%- if section.settings.subheading != blank -%}
+          <p class="featured-recipes__subheading">{{ section.settings.subheading }}</p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- liquid
+      assign recipes_to_show = section.settings.recipes_to_show | default: 6
+      if section.settings.recipe_source == 'metaobject'
+        assign recipes = shop.metaobjects.recipe.values | limit: recipes_to_show
+      else
+        assign recipes = blog[section.settings.blog].articles | limit: recipes_to_show
+      endif
+    -%}
+
+    {%- if recipes.size > 0 -%}
+      <slider-component class="slider-mobile-gutter">
+        <ul
+          class="featured-recipes__slider contains-scroll-bar grid grid--1-col slider slider--tablet grid--2-col-tablet slider--desktop grid--3-col-desktop"
+          id="Slider-{{ section.id }}"
+          role="list"
+        >
+          {%- for recipe in recipes -%}
+            <li
+              id="Slide-{{ section.id }}-{{ forloop.index }}"
+              class="featured-recipes__slide grid__item slider__slide"
+            >
+              <div class="recipe-card">
+                <div class="recipe-card__image">
+                  {%- if section.settings.recipe_source == 'metaobject' -%}
+                    {%- if recipe.featured_image -%}
+                      <a href="/pages/recipe?id={{ recipe.id }}">
+                        {{
+                          recipe.featured_image
+                          | image_url: width: 600
+                          | image_tag:
+                            loading: 'lazy',
+                            width: 300,
+                            height: 200,
+                            alt: recipe.featured_image.alt | escape
+                        }}
+                      </a>
+                    {%- endif -%}
+                  {%- else -%}
+                    {%- if recipe.image -%}
+                      <a href="{{ recipe.url }}">
+                        {{
+                          recipe.image
+                          | image_url: width: 600
+                          | image_tag:
+                            loading: 'lazy',
+                            width: 300,
+                            height: 200,
+                            alt: recipe.image.alt | escape
+                        }}
+                      </a>
+                    {%- endif -%}
+                  {%- endif -%}
+                  
+                  <div class="recipe-card__overlay">
+                    <div class="recipe-card__meta">
+                      {%- if section.settings.recipe_source == 'metaobject' -%}
+                        {%- if recipe.cooking_time -%}
+                          <span class="recipe-card__time">
+                            <span class="recipe-card__time-icon">⏱️</span>
+                            {{ recipe.cooking_time.value }} min
+                          </span>
+                        {%- endif -%}
+                        {%- if recipe.difficulty -%}
+                          <span class="recipe-card__difficulty recipe-card__difficulty--{{ recipe.difficulty.value | downcase }}">
+                            {{ recipe.difficulty.value }}
+                          </span>
+                        {%- endif -%}
+                      {%- else -%}
+                        <span class="recipe-card__date">{{ recipe.published_at | date: '%b %d, %Y' }}</span>
+                      {%- endif -%}
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="recipe-card__content">
+                  {%- if section.settings.recipe_source == 'metaobject' -%}
+                    {%- if recipe.category -%}
+                      <div class="recipe-card__category">{{ recipe.category.value }}</div>
+                    {%- endif -%}
+                    
+                    <h3 class="recipe-card__title">
+                      <a href="/pages/recipe?id={{ recipe.id }}">{{ recipe.title.value }}</a>
+                    </h3>
+                    
+                    {%- if recipe.description -%}
+                      <p class="recipe-card__description">
+                        {{ recipe.description.value | strip_html | truncate: 120 }}
+                      </p>
+                    {%- endif -%}
+                    
+                    <div class="recipe-card__stats">
+                      {%- if recipe.servings -%}
+                        <span class="recipe-card__stat">
+                          <span class="recipe-card__stat-icon">👥</span>
+                          {{ recipe.servings.value }} servings
+                        </span>
+                      {%- endif -%}
+                      {%- if recipe.prep_time -%}
+                        <span class="recipe-card__stat">
+                          <span class="recipe-card__stat-icon">🔪</span>
+                          {{ recipe.prep_time.value }} min prep
+                        </span>
+                      {%- endif -%}
+                    </div>
+                    
+                    <div class="recipe-card__button">
+                      <a href="/pages/recipe?id={{ recipe.id }}" class="button button--primary">
+                        View Recipe
+                      </a>
+                    </div>
+                  {%- else -%}
+                    {%- for tag in recipe.tags limit: 1 -%}
+                      <div class="recipe-card__category">{{ tag }}</div>
+                    {%- endfor -%}
+                    
+                    <h3 class="recipe-card__title">
+                      <a href="{{ recipe.url }}">{{ recipe.title }}</a>
+                    </h3>
+                    
+                    {%- if recipe.excerpt != blank -%}
+                      <p class="recipe-card__description">
+                        {{ recipe.excerpt | strip_html | truncate: 120 }}
+                      </p>
+                    {%- else -%}
+                      <p class="recipe-card__description">
+                        {{ recipe.content | strip_html | truncate: 120 }}
+                      </p>
+                    {%- endif -%}
+                    
+                    <div class="recipe-card__stats">
+                      <span class="recipe-card__stat">
+                        <span class="recipe-card__stat-icon">📅</span>
+                        {{ recipe.published_at | date: '%b %d' }}
+                      </span>
+                      {%- if recipe.author -%}
+                        <span class="recipe-card__stat">
+                          <span class="recipe-card__stat-icon">👨‍🍳</span>
+                          {{ recipe.author }}
+                        </span>
+                      {%- endif -%}
+                    </div>
+                    
+                    <div class="recipe-card__button">
+                      <a href="{{ recipe.url }}" class="button button--primary">
+                        Read Recipe
+                      </a>
+                    </div>
+                  {%- endif -%}
+                </div>
+              </div>
+            </li>
+          {%- endfor -%}
+        </ul>
+
+        {%- if recipes.size > 3 -%}
+          <div class="slider-buttons no-js-hidden">
+            <button
+              type="button"
+              class="slider-button slider-button--prev"
+              name="previous"
+              aria-label="Previous slide"
+            >
+              <span class="svg-wrapper">
+                {{- 'icon-caret.svg' | inline_asset_content -}}
+              </span>
+            </button>
+            <div class="slider-counter caption">
+              <span class="slider-counter--current">1</span>
+              <span aria-hidden="true"> / </span>
+              <span class="visually-hidden">of</span>
+              <span class="slider-counter--total">{{ recipes.size }}</span>
+            </div>
+            <button
+              type="button"
+              class="slider-button slider-button--next"
+              name="next"
+              aria-label="Next slide"
+            >
+              <span class="svg-wrapper">
+                {{- 'icon-caret.svg' | inline_asset_content -}}
+              </span>
+            </button>
+          </div>
+        {%- endif -%}
+      </slider-component>
+    {%- endif -%}
+    
+    {%- if section.settings.show_view_all -%}
+      <div class="featured-recipes__view-all center">
+        {%- if section.settings.recipe_source == 'metaobject' -%}
+          <a href="/pages/all-recipes" class="button button--secondary button--large">
+            View All Recipes
+          </a>
+        {%- else -%}
+          <a href="{{ blog[section.settings.blog].url }}" class="button button--secondary button--large">
+            View All Recipes
+          </a>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Featured Recipes",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "default": "Featured Recipes",
+      "label": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "default": "Discover delicious recipes using our premium kitchenware",
+      "label": "Subheading"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h2",
+          "label": "Small"
+        },
+        {
+          "value": "h1",
+          "label": "Medium"
+        },
+        {
+          "value": "h0",
+          "label": "Large"
+        }
+      ],
+      "default": "h1",
+      "label": "Heading size"
+    },
+    {
+      "type": "select",
+      "id": "recipe_source",
+      "options": [
+        {
+          "value": "metaobject",
+          "label": "Recipe Metaobjects (Recommended)"
+        },
+        {
+          "value": "blog",
+          "label": "Blog Articles"
+        }
+      ],
+      "default": "metaobject",
+      "label": "Recipe source"
+    },
+    {
+      "type": "blog",
+      "id": "blog",
+      "label": "Blog (if using blog articles)"
+    },
+    {
+      "type": "range",
+      "id": "recipes_to_show",
+      "min": 3,
+      "max": 12,
+      "step": 1,
+      "default": 6,
+      "label": "Number of recipes to show"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "default": true,
+      "label": "Show 'View all' button"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "background-1"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "color_background",
+      "id": "background_gradient",
+      "label": "Background gradient"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 36
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Recipes"
+    }
+  ]
+}
+{% endschema %}

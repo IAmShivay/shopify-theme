@@ -1,0 +1,216 @@
+{{ 'section-recipe-detail.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign recipe_id = request.url | split: 'id=' | last
+  assign recipe = shop.metaobjects.recipe[recipe_id]
+-%}
+
+{%- if recipe -%}
+  <div class="recipe-detail color-background-1 gradient">
+    <div class="page-width section-padding isolate">
+      <!-- Recipe Header -->
+      <div class="recipe-detail__header">
+        <div class="recipe-detail__breadcrumb">
+          <a href="/" class="recipe-detail__breadcrumb-link">Home</a>
+          <span class="recipe-detail__breadcrumb-separator">›</span>
+          <a href="/pages/all-recipes" class="recipe-detail__breadcrumb-link">Recipes</a>
+          <span class="recipe-detail__breadcrumb-separator">›</span>
+          <span class="recipe-detail__breadcrumb-current">{{ recipe.title.value }}</span>
+        </div>
+        
+        {%- if recipe.category -%}
+          <div class="recipe-detail__category">{{ recipe.category.value }}</div>
+        {%- endif -%}
+        
+        <h1 class="recipe-detail__title">{{ recipe.title.value }}</h1>
+        
+        {%- if recipe.description -%}
+          <p class="recipe-detail__description">{{ recipe.description.value }}</p>
+        {%- endif -%}
+        
+        <div class="recipe-detail__meta">
+          {%- if recipe.prep_time -%}
+            <div class="recipe-detail__meta-item">
+              <span class="recipe-detail__meta-icon">🔪</span>
+              <div class="recipe-detail__meta-content">
+                <span class="recipe-detail__meta-label">Prep Time</span>
+                <span class="recipe-detail__meta-value">{{ recipe.prep_time.value }} min</span>
+              </div>
+            </div>
+          {%- endif -%}
+          
+          {%- if recipe.cooking_time -%}
+            <div class="recipe-detail__meta-item">
+              <span class="recipe-detail__meta-icon">⏱️</span>
+              <div class="recipe-detail__meta-content">
+                <span class="recipe-detail__meta-label">Cook Time</span>
+                <span class="recipe-detail__meta-value">{{ recipe.cooking_time.value }} min</span>
+              </div>
+            </div>
+          {%- endif -%}
+          
+          {%- if recipe.servings -%}
+            <div class="recipe-detail__meta-item">
+              <span class="recipe-detail__meta-icon">👥</span>
+              <div class="recipe-detail__meta-content">
+                <span class="recipe-detail__meta-label">Servings</span>
+                <span class="recipe-detail__meta-value">{{ recipe.servings.value }}</span>
+              </div>
+            </div>
+          {%- endif -%}
+          
+          {%- if recipe.difficulty -%}
+            <div class="recipe-detail__meta-item">
+              <span class="recipe-detail__meta-icon">📊</span>
+              <div class="recipe-detail__meta-content">
+                <span class="recipe-detail__meta-label">Difficulty</span>
+                <span class="recipe-detail__meta-value recipe-detail__difficulty--{{ recipe.difficulty.value | downcase }}">
+                  {{ recipe.difficulty.value }}
+                </span>
+              </div>
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+
+      <!-- Recipe Content -->
+      <div class="recipe-detail__content">
+        <!-- Recipe Image -->
+        {%- if recipe.featured_image -%}
+          <div class="recipe-detail__image">
+            {{
+              recipe.featured_image
+              | image_url: width: 800
+              | image_tag:
+                loading: 'lazy',
+                width: 800,
+                height: 600,
+                alt: recipe.featured_image.alt | escape
+            }}
+          </div>
+        {%- endif -%}
+
+        <!-- Recipe Info -->
+        <div class="recipe-detail__info">
+          <!-- Ingredients -->
+          {%- if recipe.ingredients -%}
+            <div class="recipe-detail__section">
+              <h2 class="recipe-detail__section-title">Ingredients</h2>
+              <div class="recipe-detail__ingredients">
+                {{ recipe.ingredients.value }}
+              </div>
+            </div>
+          {%- endif -%}
+
+          <!-- Instructions -->
+          {%- if recipe.instructions -%}
+            <div class="recipe-detail__section">
+              <h2 class="recipe-detail__section-title">Instructions</h2>
+              <div class="recipe-detail__instructions">
+                {{ recipe.instructions.value }}
+              </div>
+            </div>
+          {%- endif -%}
+
+          <!-- Chef Tips -->
+          {%- if recipe.chef_tips -%}
+            <div class="recipe-detail__section">
+              <h2 class="recipe-detail__section-title">Chef's Tips</h2>
+              <div class="recipe-detail__tips">
+                <div class="recipe-detail__tips-icon">💡</div>
+                <div class="recipe-detail__tips-content">
+                  {{ recipe.chef_tips.value }}
+                </div>
+              </div>
+            </div>
+          {%- endif -%}
+
+          <!-- Nutrition Info -->
+          {%- if recipe.nutrition_info -%}
+            <div class="recipe-detail__section">
+              <h2 class="recipe-detail__section-title">Nutrition Information</h2>
+              <div class="recipe-detail__nutrition">
+                {{ recipe.nutrition_info.value }}
+              </div>
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+
+      <!-- Related Products -->
+      {%- if recipe.related_products and recipe.related_products.value.size > 0 -%}
+        <div class="recipe-detail__related-products">
+          <h2 class="recipe-detail__section-title">Recommended Kitchen Tools</h2>
+          <div class="recipe-detail__products-grid">
+            {%- for product_handle in recipe.related_products.value -%}
+              {%- assign product = all_products[product_handle] -%}
+              {%- if product -%}
+                <div class="recipe-detail__product-card">
+                  <div class="recipe-detail__product-image">
+                    {%- if product.featured_media -%}
+                      <a href="{{ product.url }}">
+                        {{
+                          product.featured_media
+                          | image_url: width: 300
+                          | image_tag:
+                            loading: 'lazy',
+                            width: 150,
+                            height: 150,
+                            alt: product.featured_media.alt | escape
+                        }}
+                      </a>
+                    {%- endif -%}
+                  </div>
+                  <div class="recipe-detail__product-info">
+                    <h4 class="recipe-detail__product-title">
+                      <a href="{{ product.url }}">{{ product.title }}</a>
+                    </h4>
+                    <div class="recipe-detail__product-price">
+                      {%- render 'price', product: product, use_variant: true, show_badges: false -%}
+                    </div>
+                    <a href="{{ product.url }}" class="button button--secondary">
+                      View Product
+                    </a>
+                  </div>
+                </div>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        </div>
+      {%- endif -%}
+
+      <!-- Back to Recipes -->
+      <div class="recipe-detail__back">
+        <a href="/pages/all-recipes" class="button button--primary">
+          ← Back to All Recipes
+        </a>
+      </div>
+    </div>
+  </div>
+{%- else -%}
+  <div class="recipe-detail color-background-1 gradient">
+    <div class="page-width section-padding isolate">
+      <div class="recipe-detail__not-found">
+        <h1>Recipe Not Found</h1>
+        <p>Sorry, the recipe you're looking for doesn't exist.</p>
+        <a href="/pages/all-recipes" class="button button--primary">
+          View All Recipes
+        </a>
+      </div>
+    </div>
+  </div>
+{%- endif -%}
+
+<style>
+.section-padding {
+  padding-top: 5rem;
+  padding-bottom: 5rem;
+}
+
+@media screen and (min-width: 750px) {
+  .section-padding {
+    padding-top: 7rem;
+    padding-bottom: 7rem;
+  }
+}
+</style>

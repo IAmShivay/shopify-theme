@@ -1,0 +1,239 @@
+{{ 'section-blog-featured.css' | asset_url | stylesheet_tag }}
+{{ 'component-article-card.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+
+  .blog-featured-{{ section.id }} {
+    background: {{ section.settings.background_color }};
+    {% if section.settings.background_gradient != blank %}
+      background: {{ section.settings.background_gradient }};
+    {% endif %}
+  }
+{%- endstyle -%}
+
+<div class="blog-featured blog-featured-{{ section.id }} color-{{ section.settings.color_scheme }} gradient">
+  <div class="page-width section-{{ section.id }}-padding isolate">
+    {%- if section.settings.heading != blank -%}
+      <div class="blog-featured__header center">
+        <h2 class="blog-featured__heading inline-richtext {{ section.settings.heading_size }}">
+          {{ section.settings.heading }}
+        </h2>
+        {%- if section.settings.subheading != blank -%}
+          <p class="blog-featured__subheading">{{ section.settings.subheading }}</p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- if section.settings.blog != blank and section.settings.blog.articles_count > 0 -%}
+      <div class="blog-featured__grid">
+        {%- assign articles_shown = 0 -%}
+        {%- for article in section.settings.blog.articles limit: section.settings.post_limit -%}
+          <article class="blog-featured__article">
+            <div class="article-card">
+              {%- if article.image -%}
+                <div class="article-card__image-wrapper">
+                  <div class="article-card__image media media--hover-effect">
+                    <img
+                      srcset="
+                        {%- if article.image.width >= 165 -%}{{ article.image | image_url: width: 165 }} 165w,{%- endif -%}
+                        {%- if article.image.width >= 360 -%}{{ article.image | image_url: width: 360 }} 360w,{%- endif -%}
+                        {%- if article.image.width >= 533 -%}{{ article.image | image_url: width: 533 }} 533w,{%- endif -%}
+                        {%- if article.image.width >= 720 -%}{{ article.image | image_url: width: 720 }} 720w,{%- endif -%}
+                        {%- if article.image.width >= 1000 -%}{{ article.image | image_url: width: 1000 }} 1000w,{%- endif -%}
+                        {{ article.image | image_url }} {{ article.image.width }}w
+                      "
+                      src="{{ article.image | image_url: width: 533 }}"
+                      sizes="(min-width: {{ settings.page_width }}px) {{ settings.page_width | minus: 100 | divided_by: 2 }}px, (min-width: 750px) calc((100vw - 130px) / 2), calc((100vw - 50px) / 2)"
+                      alt="{{ article.image.alt | escape }}"
+                      class="motion-reduce"
+                      loading="lazy"
+                      width="{{ article.image.width }}"
+                      height="{{ article.image.height }}"
+                    >
+                  </div>
+                  <div class="article-card__badge">
+                    <span class="badge color-{{ section.settings.blog_card_color_scheme }}">
+                      {{ article.tags.first }}
+                    </span>
+                  </div>
+                </div>
+              {%- endif -%}
+
+              <div class="article-card__content">
+                <div class="article-card__info">
+                  <span class="article-card__date">
+                    {{ article.published_at | time_tag: format: 'date' }}
+                  </span>
+                  <span class="article-card__author">
+                    By {{ article.author }}
+                  </span>
+                </div>
+
+                <h3 class="article-card__heading">
+                  <a href="{{ article.url }}" class="full-unstyled-link">
+                    {{ article.title | truncate: 50 | escape }}
+                  </a>
+                </h3>
+
+                {%- if article.excerpt != blank -%}
+                  <p class="article-card__excerpt">
+                    {{ article.excerpt | strip_html | truncatewords: 20 }}
+                  </p>
+                {%- else -%}
+                  <p class="article-card__excerpt">
+                    {{ article.content | strip_html | truncatewords: 20 }}
+                  </p>
+                {%- endif -%}
+
+                <div class="article-card__footer">
+                  <a href="{{ article.url }}" class="article-card__link">
+                    Read More
+                    <span class="svg-wrapper">
+                      {{- 'icon-arrow.svg' | inline_asset_content -}}
+                    </span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </article>
+          {%- assign articles_shown = articles_shown | plus: 1 -%}
+        {%- endfor -%}
+      </div>
+
+      {%- if section.settings.show_view_all -%}
+        <div class="blog-featured__footer center">
+          <a href="{{ section.settings.blog.url }}" class="button">
+            {{ 'sections.featured_blog.view_all' | t }}
+          </a>
+        </div>
+      {%- endif -%}
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Featured Blog",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "default": "Skincare Tips & Insights",
+      "label": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "default": "Discover the latest in natural skincare, ingredient spotlights, and wellness tips from our experts",
+      "label": "Subheading"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h2",
+          "label": "Small"
+        },
+        {
+          "value": "h1",
+          "label": "Medium"
+        },
+        {
+          "value": "h0",
+          "label": "Large"
+        }
+      ],
+      "default": "h1",
+      "label": "Heading size"
+    },
+    {
+      "type": "blog",
+      "id": "blog",
+      "label": "Blog"
+    },
+    {
+      "type": "range",
+      "id": "post_limit",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "default": 6,
+      "label": "Number of posts to show"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "default": true,
+      "label": "Show 'View all' button"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "background-1"
+    },
+    {
+      "type": "color_scheme",
+      "id": "blog_card_color_scheme",
+      "label": "Blog card color scheme",
+      "default": "background-2"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "color_background",
+      "id": "background_gradient",
+      "label": "Background gradient"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 36
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Blog"
+    }
+  ]
+}
+{% endschema %}

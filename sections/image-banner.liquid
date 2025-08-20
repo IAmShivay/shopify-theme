@@ -160,6 +160,46 @@
                 </a>
               {%- endif -%}
             </div>
+          {%- when 'features' -%}
+            <div class="banner__features" {{ block.shopify_attributes }}>
+              <div class="banner__features-grid">
+                {%- if block.settings.feature_1_icon != blank and block.settings.feature_1_text != blank -%}
+                  <div class="banner__feature">
+                    <div class="banner__feature-icon">
+                      {{ block.settings.feature_1_icon }}
+                    </div>
+                    <span class="banner__feature-text">{{ block.settings.feature_1_text }}</span>
+                  </div>
+                {%- endif -%}
+                {%- if block.settings.feature_2_icon != blank and block.settings.feature_2_text != blank -%}
+                  <div class="banner__feature">
+                    <div class="banner__feature-icon">
+                      {{ block.settings.feature_2_icon }}
+                    </div>
+                    <span class="banner__feature-text">{{ block.settings.feature_2_text }}</span>
+                  </div>
+                {%- endif -%}
+                {%- if block.settings.feature_3_icon != blank and block.settings.feature_3_text != blank -%}
+                  <div class="banner__feature">
+                    <div class="banner__feature-icon">
+                      {{ block.settings.feature_3_icon }}
+                    </div>
+                    <span class="banner__feature-text">{{ block.settings.feature_3_text }}</span>
+                  </div>
+                {%- endif -%}
+              </div>
+            </div>
+          {%- when 'badge' -%}
+            <div class="banner__badge" {{ block.shopify_attributes }}>
+              <div class="banner__badge-content">
+                {%- if block.settings.badge_text != blank -%}
+                  <span class="banner__badge-text">{{ block.settings.badge_text }}</span>
+                {%- endif -%}
+                {%- if block.settings.badge_subtext != blank -%}
+                  <span class="banner__badge-subtext">{{ block.settings.badge_subtext }}</span>
+                {%- endif -%}
+              </div>
+            </div>
         {%- endcase -%}
       {%- endfor -%}
     </div>
@@ -485,20 +525,102 @@
           "label": "t:sections.image-banner.blocks.buttons.settings.button_style_secondary_2.label"
         }
       ]
+    },
+    {
+      "type": "features",
+      "name": "Features",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "feature_1_icon",
+          "label": "Feature 1 icon (emoji or text)",
+          "default": "🚚"
+        },
+        {
+          "type": "text",
+          "id": "feature_1_text",
+          "label": "Feature 1 text",
+          "default": "Free Shipping"
+        },
+        {
+          "type": "text",
+          "id": "feature_2_icon",
+          "label": "Feature 2 icon (emoji or text)",
+          "default": "⭐"
+        },
+        {
+          "type": "text",
+          "id": "feature_2_text",
+          "label": "Feature 2 text",
+          "default": "Premium Quality"
+        },
+        {
+          "type": "text",
+          "id": "feature_3_icon",
+          "label": "Feature 3 icon (emoji or text)",
+          "default": "🔒"
+        },
+        {
+          "type": "text",
+          "id": "feature_3_text",
+          "label": "Feature 3 text",
+          "default": "Secure Payment"
+        }
+      ]
+    },
+    {
+      "type": "badge",
+      "name": "Badge",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "badge_text",
+          "label": "Badge text",
+          "default": "Best Seller"
+        },
+        {
+          "type": "text",
+          "id": "badge_subtext",
+          "label": "Badge subtext",
+          "default": "#1 Choice"
+        }
+      ]
     }
   ],
   "presets": [
     {
-      "name": "t:sections.image-banner.presets.name",
+      "name": "Kitchen Hero Banner",
       "blocks": [
         {
-          "type": "heading"
+          "type": "heading",
+          "settings": {
+            "heading": "Professional Kitchen Tools",
+            "heading_size": "h0"
+          }
         },
         {
-          "type": "text"
+          "type": "text",
+          "settings": {
+            "text": "Elevate your culinary experience with our premium collection of professional-grade kitchenware.",
+            "text_style": "body"
+          }
         },
         {
-          "type": "buttons"
+          "type": "features"
+        },
+        {
+          "type": "buttons",
+          "settings": {
+            "button_label_1": "Shop Collection",
+            "button_style_secondary_1": false,
+            "button_label_2": "View Catalog",
+            "button_style_secondary_2": true
+          }
+        },
+        {
+          "type": "badge"
         }
       ]
     }
