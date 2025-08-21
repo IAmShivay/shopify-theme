@@ -1,1 +1,53 @@
-{"name":"t:sections.footer.name","type":"footer","sections":{"footer":{"type":"footer","custom_css":[],"settings":{"color_scheme":"background-2","newsletter_enable":true,"newsletter_heading":"<strong>Sign up for updates<\/strong>","enable_follow_on_shop":true,"show_social":true,"enable_country_selector":true,"enable_language_selector":true,"payment_enable":true,"show_policy":true,"margin_top":0,"padding_top":76,"padding_bottom":32}}},"order":["footer"]}
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "name": "t:sections.footer.name",
+  "type": "footer",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "blocks": {
+        "page_links_JnA3Vr": {
+          "type": "page_links",
+          "settings": {
+            "heading": "Quick Links"
+          }
+        }
+      },
+      "block_order": [
+        "page_links_JnA3Vr"
+      ],
+      "custom_css": [],
+      "settings": {
+        "color_scheme": "inverse",
+        "footer_layout": "standard",
+        "show_decorative_border": true,
+        "footer_border_thickness": 1,
+        "footer_border_opacity": 15,
+        "heading_size": 100,
+        "text_size": 100,
+        "newsletter_enable": false,
+        "newsletter_heading": "<strong>Sign up for updates</strong>",
+        "enable_follow_on_shop": true,
+        "show_social": true,
+        "enable_country_selector": true,
+        "enable_language_selector": true,
+        "payment_enable": true,
+        "show_policy": true,
+        "margin_top": 0,
+        "padding_top": 76,
+        "padding_bottom": 32
+      }
+    }
+  },
+  "order": [
+    "footer"
+  ]
+}
